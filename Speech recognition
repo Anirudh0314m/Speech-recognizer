@@ -1,0 +1,58 @@
+!pip install SpeechRecognition
+
+!pip install pygame
+
+import speech_recognition as sr
+import pyttsx3
+import datetime
+
+def speak(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
+def get_audio():
+    recognizer = sr.Recognizer()
+    with sr.Microphone()  as source:
+        print("LIstening...")
+        audio = recognizer.listen(source)
+        command = ""
+        try:
+            command = recognizer.recognize.google(audio)
+            print("You said:" + command)
+        except sr.UnknownValueError:
+            print("could not understand audio")
+        except sr.RequestError as e:
+            print("Failed:{0}".format(e))
+        return command.lower()
+def greet():
+  current_time =   datetime.datetime.now()
+  hour = current_time.hour
+  if 0 <= hour < 12:
+    speak("Good Morning!")
+  elif 12 <= hour < 18:
+    speak("Good Afternoon!")
+  else:
+    speak("Good evening!")
+
+def ai_assistant():
+  greet()
+  speak("I am your AI assistant.How can I help you today?")
+
+  while True:
+    command = get_audio()
+
+    if "stop" in command:
+      speak("Goodbye!")
+      break
+    elif "date" in command:
+      current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+      speak(f"The current date is{current_date}")
+    elif "time" in command:
+      current_time = datetime.datetime.now().strftime("%H:%M:%S")
+      speak(f"The current time is{current_time}")
+    else:
+      speak(f"I don't understand your command.Please try again.!")
+
+if __name__ == "__main__":
+  ai_assistant()
